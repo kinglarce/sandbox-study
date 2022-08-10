@@ -196,7 +196,21 @@ ORDER BY
 
 What is the total items and amount spent for each member before they became a member?
 
-<pre><code><strong>// Some code</strong></code></pre>
+```sql
+SELECT 
+  s.customer_id, 
+  SUM(m.price), 
+  COUNT(s.product_id) 
+FROM 
+  dannys_diner.sales AS s 
+  JOIN dannys_diner.members AS mb ON s.customer_id = mb.customer_id 
+  JOIN dannys_diner.menu AS m ON m.product_id = s.product_id 
+WHERE 
+  s.order_date < mb.join_date 
+GROUP BY 
+  s.customer_id
+
+```
 
 If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 
