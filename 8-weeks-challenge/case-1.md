@@ -67,7 +67,41 @@ GROUP BY
 
 What is the most purchased item on the menu and how many times was it purchased by all customers?
 
-<pre><code><strong>// Some code</strong></code></pre>
+<pre class="language-sql"><code class="lang-sql"><strong>-- Approach 1
+</strong>SELECT 
+  COUNT(s.product_id) as most_purchased, 
+  m.product_name 
+FROM 
+  dannys_diner.sales as s 
+  JOIN dannys_diner.menu as m ON m.product_id = s.product_id 
+GROUP BY 
+  s.product_id, 
+  m.product_name 
+ORDER BY 
+  most_purchased DESC 
+LIMIT 
+  1;
+
+-- Approach 2
+WITH most_purchased AS (
+  SELECT 
+    m.product_name, 
+    COUNT(s.product_id) as total_purchase, 
+    ROW_NUMBER() OVER() as rank 
+  FROM 
+    dannys_diner.sales as s 
+    JOIN dannys_diner.menu as m ON m.product_id = s.product_id 
+  GROUP BY 
+    m.product_name
+) 
+-- SELECT * FROM most_purchased;
+SELECT 
+  product_name, 
+  total_purchase 
+FROM 
+  most_purchased 
+WHERE 
+  rank = 1</code></pre>
 
 Which item was the most popular for each customer?
 
