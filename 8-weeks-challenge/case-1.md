@@ -137,7 +137,31 @@ WHERE
 
 Which item was purchased first by the customer after they became a member?
 
-<pre><code><strong>// Some code</strong></code></pre>
+```sql
+WITH purchased_after_membership AS (
+  SELECT 
+    mb.customer_id, 
+    s.product_id, 
+    mb.join_date, 
+    s.order_date, 
+    ROW_NUMBER() OVER(PARTITION BY s.customer_id) rank 
+  FROM 
+    dannys_diner.members AS mb 
+    JOIN dannys_diner.sales AS s ON s.customer_id = mb.customer_id 
+  WHERE 
+    s.order_date >= mb.join_date
+) 
+SELECT 
+  customer_id, 
+  product_name, 
+  order_date 
+FROM 
+  purchased_after_membership as pm 
+  JOIN dannys_diner.menu AS m ON m.product_id = pm.product_id 
+WHERE 
+  rank = 1
+
+```
 
 Which item was purchased just before the customer became a member?
 
