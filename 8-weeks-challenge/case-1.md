@@ -36,31 +36,59 @@ GROUP BY
 What was the first item from the menu purchased by each customer?
 
 ```sql
-// Some code
+WITH ranked AS (
+  SELECT 
+    m.product_name, 
+    s.customer_id, 
+    s.order_date, 
+    DENSE_RANK() OVER(
+      PARTITION BY s.customer_id 
+      ORDER BY 
+        s.order_date, 
+        s.product_id
+    ) rank 
+  FROM 
+    dannys_diner.sales as s 
+    JOIN dannys_diner.menu as m ON m.product_id = s.product_id
+)
+-- SELECT * FROM ranked # for testing the CTE(common table expression)
+SELECT 
+  customer_id, 
+  product_name 
+FROM 
+  ranked 
+WHERE 
+  rank = 1 
+GROUP BY 
+  customer_id, 
+  product_name
+
 ```
 
 What is the most purchased item on the menu and how many times was it purchased by all customers?
 
-
+<pre><code><strong>// Some code</strong></code></pre>
 
 Which item was the most popular for each customer?
 
-
+<pre><code><strong>// Some code</strong></code></pre>
 
 Which item was purchased first by the customer after they became a member?
 
-
+<pre><code><strong>// Some code</strong></code></pre>
 
 Which item was purchased just before the customer became a member?
 
-
+<pre><code><strong>// Some code</strong></code></pre>
 
 What is the total items and amount spent for each member before they became a member?
 
-
+<pre><code><strong>// Some code</strong></code></pre>
 
 If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
 
-
+<pre><code><strong>// Some code</strong></code></pre>
 
 In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+
+<pre><code><strong>// Some code</strong></code></pre>
