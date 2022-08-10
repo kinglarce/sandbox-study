@@ -105,7 +105,35 @@ WHERE
 
 Which item was the most popular for each customer?
 
-<pre><code><strong>// Some code</strong></code></pre>
+```sql
+WITH most_popular AS (
+  SELECT 
+    m.product_name, 
+    s.customer_id, 
+    COUNT(s.product_id) as order_count, 
+    DENSE_RANK() OVER(
+      PARTITION BY s.customer_id 
+      ORDER BY 
+        COUNT(s.product_id) DESC
+    ) rank 
+  FROM 
+    dannys_diner.sales as s 
+    JOIN dannys_diner.menu as m ON m.product_id = s.product_id 
+  GROUP BY 
+    s.customer_id, 
+    m.product_name
+) 
+-- SELECT * FROM most_popular
+SELECT 
+  product_name, 
+  customer_id, 
+  order_count 
+FROM 
+  most_popular AS mp 
+WHERE 
+  rank = 1
+
+```
 
 Which item was purchased first by the customer after they became a member?
 
